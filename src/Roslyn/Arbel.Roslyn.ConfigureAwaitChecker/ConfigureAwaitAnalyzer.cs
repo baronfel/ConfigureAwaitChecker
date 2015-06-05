@@ -8,7 +8,7 @@ using VisualBasicSyntax = Microsoft.CodeAnalysis.VisualBasic.Syntax;
 
 namespace Arbel.Roslyn.ConfigureAwaitChecker
 {
-    [DiagnosticAnalyzer]
+    [DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
     public class ConfigureAwaitAnalyzer : DiagnosticAnalyzer
     {
         public const string DiagnosticId = "AwaitWithoutConfigureAwait";
@@ -21,10 +21,7 @@ namespace Arbel.Roslyn.ConfigureAwaitChecker
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true);
 
-        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
-        {
-            get { return ImmutableArray.Create(Rule); }
-        }
+        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(Rule);
 
         public override void Initialize(AnalysisContext context)
         {

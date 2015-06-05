@@ -82,7 +82,7 @@ namespace TestHelper
             for (int i = 0; i < attempts; ++i)
             {
                 var actions = new List<CodeAction>();
-                codeFixProvider.ComputeFixesAsync(new CodeFixContext(document, analyzerDiagnostics[0], (a, b) => actions.Add(a), CancellationToken.None)).Wait();
+                codeFixProvider.RegisterCodeFixesAsync(new CodeFixContext(document, analyzerDiagnostics[0], (a, b) => actions.Add(a), CancellationToken.None)).Wait();
                 if (!actions.Any())
                 {
                     break;

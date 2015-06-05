@@ -11,20 +11,14 @@ using System.Collections.Immutable;
 
 namespace Arbel.Roslyn.ConfigureAwaitChecker
 {
-    [ExportCodeFixProvider(ConfigureAwaitAnalyzer.DiagnosticId, LanguageNames.CSharp), Shared]
+    [ExportCodeFixProvider(LanguageNames.CSharp), Shared]
     public class ConfigureAwaitCSharpCodeFix : CodeFixProvider
     {
-        public override FixAllProvider GetFixAllProvider()
-        {
-            return WellKnownFixAllProviders.BatchFixer;
-        }
+        public override FixAllProvider GetFixAllProvider() => WellKnownFixAllProviders.BatchFixer;
 
-        public override ImmutableArray<string> GetFixableDiagnosticIds()
-        {
-            return ImmutableArray.Create(ConfigureAwaitAnalyzer.DiagnosticId);
-        }
+        public override ImmutableArray<string> FixableDiagnosticIds => ImmutableArray.Create(ConfigureAwaitAnalyzer.DiagnosticId);
 
-        public override async Task ComputeFixesAsync(CodeFixContext context)
+        public override async Task RegisterCodeFixesAsync(CodeFixContext context)
         {
             var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
             var diagnostic = context.Diagnostics.First();
@@ -33,11 +27,11 @@ namespace Arbel.Roslyn.ConfigureAwaitChecker
             var declaration = root.FindToken(diagnosticSpan.Start).Parent
                 .FirstAncestorOrSelf<AwaitExpressionSyntax>();
 
-            context.RegisterFix(
+            context.RegisterCodeFix(
                 CodeAction.Create("Add ConfigureAwait(false)", cancellationToken =>
                     AddConfigureAwait(context.Document, declaration, false, cancellationToken)),
                 diagnostic);
-            context.RegisterFix(
+            context.RegisterCodeFix(
                 CodeAction.Create("Add ConfigureAwait(true)", cancellationToken =>
                     AddConfigureAwait(context.Document, declaration, true, cancellationToken)),
                 diagnostic);
